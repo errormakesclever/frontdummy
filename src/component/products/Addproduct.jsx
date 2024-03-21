@@ -1,17 +1,27 @@
 
 import { useState } from "react"
 import axios from "axios"
+import { ref, uploadBytes } from "firebase/storage"
+import { firebasStorage } from "../../config/firebase.config"
+import { useNavigate } from 'react-router-dom'
+
+const genarateRandomText = () => {
+    return (Math.random() + 1).toString(36).substring(7)
+}
 function Addproduct() {
+    const navigate = useNavigate()
 
     const [title, setTitle] = useState("")
     const [desc, setDesc] = useState("")
     const [price, setPrice] = useState(0)
+    const [image, setImage] = useState('')
 
     const [prevImage, setPrevImage] = useState(null)
 
     const handleImageChange = (e) => {
         const file = e.target.files[0]
-        
+        setImage(file)
+
         console.log(file);
         if (file) {
             const reader = new FileReader()
@@ -28,10 +38,19 @@ function Addproduct() {
         console.log(title)
         console.log(desc)
         console.log(price)
+        console.log(image);
 
-        axios.post("http://localhost:8000/save-product",{
-            title,desc,price
-        }).then((res)=>{console.log(res.data)}).catch((err)=>{console.log(err)})
+        const uploadImage = ref(
+            firebasStorage, `images/${genarateRandomText()}-${image.name}`
+        )
+        uploadBytes(uploadImage, image).then((response) => {
+            const imagePath = response.metadata.fullPath
+            axios.post("http://localhost:8000/save-product", {
+                title, desc, price,imagePath
+            }).then((res) => { navigate('/show-products') }).catch((err) => { console.log(err) })
+
+
+        })
 
 
     }

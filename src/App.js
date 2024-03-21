@@ -5,13 +5,12 @@ import Signup from "./component/users/Signup";
 import Login from "./component/users/Login";
 import ShowProducts from "./component/products/ShowProducts";
 
+
 function App() {
+
   return (
-    <div>
       <BrowserRouter>
-
         <Navbar />
-
         <Routes>
           <Route path="/add-product" element={<Addproduct />}></Route>
           <Route path="/show-products" element={<ShowProducts />} />
@@ -19,9 +18,7 @@ function App() {
           <Route path="/login" element={<Login />}></Route>
           <Route path="/signup" element={<Signup />}></Route>
         </Routes>
-
       </BrowserRouter>
-    </div>
   );
 }
 
